@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Étiquettes .NLBL — Clément Design</title>
+<link rel="icon" href="assets/icone.png">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <img class="logo-noir" src="assets/logo-clement.png" alt="Clément Design">
+    <img class="logo-blanc" src="assets/logo-clement-blanc.png" alt="Clément Design">
+    <h1>Étiquettes .NLBL</h1>
+    <nav class="nav cache" id="nav" aria-label="Navigation">
+      <button class="onglet actif" data-page="generer">Générer</button>
+      <button class="onglet" data-page="historique">Historique</button>
+      <button class="onglet cache" data-page="comptes" id="ongletComptes">Comptes</button>
+      <button type="button" class="etat" id="etat" title="État de l'enregistrement dans la base"><span class="point"></span><span id="etatTexte">En ligne</span></button>
+      <span class="qui"><span><strong id="quiNom"></strong> · <span id="quiAtelier"></span></span>
+        <button class="btn small" id="btnDeconnexion">Déconnexion</button></span>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ Connexion ============================ -->
+<div class="connexion" id="vueConnexion">
+  <form class="card" id="formConnexion" autocomplete="on">
+    <h2>Connexion</h2>
+    <p class="hint">Chaque génération d'étiquettes est enregistrée au nom de votre atelier.</p>
+    <div class="field"><label for="identifiant">Identifiant</label>
+      <input type="text" id="identifiant" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+    <div class="field"><label for="code">Code</label>
+      <input type="password" id="code" autocomplete="current-password" required></div>
+    <button class="btn primary" type="submit" id="btnConnexion" style="width:100%">Se connecter</button>
+    <div class="erreur cache" id="erreurConnexion" role="alert"></div>
+  </form>
+</div>
+
+<main class="wrap cache" id="vueApp">
+  <div class="bandeau cache" id="bandeau" role="status"></div>
+  <div class="chargement" id="chargement">Chargement du catalogue…</div>
+
+  <!-- ============================ Générer ============================ -->
+  <div class="grid cache" id="pageGenerer">
+    <div>
+      <section class="card">
+        <h2><span class="step">1</span>Article</h2>
+        <div class="field"><input type="text" id="recherche" placeholder="Rechercher un article (ex. ADDICT, SFAX…)" autocomplete="off"></div>
+        <div class="chips scroll" id="articles"></div>
+      </section>
+      <section class="card">
+        <h2><span class="step">2</span>Couleur et manche</h2>
+        <div class="field"><span class="lbl">Couleur</span><div class="chips" id="couleurs"></div></div>
+        <div class="field" id="blocManche" style="margin-bottom:0"><span class="lbl">Manche</span><div class="chips" id="manches"></div></div>
+      </section>
+      <section class="card">
+        <h2><span class="step">3</span>OF et type</h2>
+        <div class="row">
+          <div class="field"><label for="of">N° d'OF</label><input type="text" id="of" inputmode="numeric" maxlength="20" placeholder="ex. 078600" autocomplete="off"></div>
+          <div class="field"><label for="type">Type de produit</label><select id="type"></select></div>
+        </div>
+        <label class="switch"><input type="checkbox" id="spe"> Mode SPE (fabrication spéciale)</label>
+        <p class="hint">En mode SPE, toutes les couleurs et tailles du catalogue sont proposées et le code-barres est calculé (préfixe 99).</p>
+      </section>
+      <section class="card">
+        <h2><span class="step">4</span>Tailles à imprimer</h2>
+        <div class="outils" id="outilsTailles">
+          <button type="button" class="btn small" id="btnTout">Tout cocher</button>
+          <button type="button" class="btn small" id="btnAucune">Tout décocher</button>
+          <span class="compte" id="compte"></span>
+        </div>
+        <div class="chips" id="tailles"></div>
+      </section>
+    </div>
+    <div>
+      <section class="card">
+        <h2>Aperçu de l'étiquette</h2>
+        <div class="etiq" id="etiq"></div>
+        <div class="manque" id="manque"></div>
+        <div class="liste-sel" id="listeSel"></div>
+        <div class="actions"><button class="btn primary" id="btnGenerer" disabled>Générer les étiquettes (.zip)</button></div>
+        <p class="hint">Un fichier .nlbl par taille cochée, nommé avec le modèle et la taille (ex. <span class="mono">ADDICT-ML_T46_OF078600.nlbl</span>). Chaque génération est enregistrée dans la base ; sans Internet, elle est gardée sur ce poste et envoyée automatiquement au retour de la connexion.</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============================ Historique ============================ -->
+  <section class="card cache" id="pageHistorique">
+    <h2>Historique des générations</h2>
+    <div class="filtres">
+      <div class="field"><label for="hDepuis">Du</label><input type="date" id="hDepuis"></div>
+      <div class="field"><label for="hJusqua">Au</label><input type="date" id="hJusqua"></div>
+      <div class="field" id="hBlocAtelier"><label for="hAtelier">Atelier</label><select id="hAtelier"><option value="">Tous</option></select></div>
+      <div class="field"><label for="hRecherche">OF ou modèle</label><input type="text" id="hRecherche" placeholder="Filtrer…" autocomplete="off"></div>
+      <div class="field"><button class="btn" id="hActualiser" style="width:100%">Actualiser</button></div>
+      <div class="field"><button class="btn" id="hExporter" style="width:100%">Exporter (Excel/CSV)</button></div>
+    </div>
+    <div class="resume" id="hResume"></div>
+    <div class="tablewrap" id="hTable"></div>
+  </section>
+
+  <!-- ============================ Comptes (Achats) ============================ -->
+  <section class="card cache" id="pageComptes">
+    <h2>Comptes</h2>
+    <p class="hint" style="margin-top:0">Changer le code d'un compte déconnecte ses sessions ouvertes. Un compte bloqué (5 erreurs) est débloqué en lui redonnant un code.</p>
+    <div class="tablewrap" id="cTable"></div>
+  </section>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/nlbl.js"></script>
+<script src="assets/modele-zebra.js"></script>
+<script src="assets/regles.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
